@@ -1,4 +1,3 @@
-/* Here's the code extracted from the images you provided:  */
 
 #include <stdio.h>
 #include <stdlib.h>
