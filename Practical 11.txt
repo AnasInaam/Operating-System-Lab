@@ -1,0 +1,40 @@
+Title: Installation and Usage Guide for Oracle VirtualBox, Linux Installation, and C Programming with Vi Editor
+
+Introduction:
+Oracle VirtualBox is a powerful virtualization tool that allows users to run multiple operating systems simultaneously on a single physical machine. This guide provides step-by-step instructions for installing Oracle VirtualBox on a Windows system, setting up a Linux virtual machine within VirtualBox, and writing and compiling a C program using the Vi text editor on the Linux environment.
+
+Installation Steps for Oracle VirtualBox on Windows:
+1. Download the Oracle VirtualBox installer from the official website.
+2. Double-click the installer to begin the installation process.
+3. Follow the on-screen instructions, accepting the license agreement and selecting the desired installation options.
+4. Once the installation is complete, launch Oracle VirtualBox from the Start menu.
+
+Setting Up a Linux Virtual Machine:
+1. Download the ISO image of the preferred Linux distribution (Mint/BOSS/Ubuntu) from the official website.
+2. Open Oracle VirtualBox and click on the "New" button to create a new virtual machine.
+3. Follow the wizard to set up the virtual machine, providing a name, selecting the type and version of Linux, and allocating memory and storage.
+4. In the VirtualBox Manager, select the newly created virtual machine and click on the "Settings" button.
+5. Navigate to the "Storage" tab and add the downloaded Linux ISO file to the virtual optical drive.
+6. Start the virtual machine, and follow the on-screen instructions to install Linux within the virtual environment.
+
+Using Vi Editor to Write a C Program:
+1. Open the terminal in the Linux virtual machine.
+2. Type `vi filename.c` to create a new C file and open it in the Vi editor.
+3. Press 'i' to enter insert mode and start typing your C program.
+4. To save the file, press `Esc` to exit insert mode, then type `:wq` and press `Enter`. This command saves the file and exits Vi.
+5. To compile the C program, use the `gcc` compiler. For example: `gcc filename.c -o output`
+6. To execute the compiled program, type `./output` in the terminal.
+
+Common Vi Editor Commands:
+- `i` : Enter insert mode
+- `Esc` : Exit insert mode
+- `:w` : Save changes
+- `:q` : Quit Vi
+- `:wq` : Save and quit
+- `dd` : Delete a line
+- `yy` : Copy a line
+- `p` : Paste a copied line
+- `:x` : Save and quit (alternative to `:wq`)
+
+Conclusion:
+By following these steps, users can successfully install Oracle VirtualBox on Windows, set up a Linux virtual machine, and write and compile a C program using the Vi editor. This provides a versatile environment for software development and experimentation.
