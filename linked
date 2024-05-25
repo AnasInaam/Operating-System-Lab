@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_FILES 100
+#define DISK_SIZE 1000
+
+typedef struct {
+    char name[20];
+    int *blocks;
+    int length;
+} LinkedFile;
+
+LinkedFile linkedFiles[MAX_FILES];
+int disk[DISK_SIZE];
+int linkedCount = 0;
+
+void initializeDisk() {
+    for (int i = 0; i < DISK_SIZE; i++) {
+        disk[i] = -1;  // -1 indicates the block is free
+    }
+}
+
+void createLinkedFile(const char *name, int length) {
+    int *blocks = malloc(length * sizeof(int));
+    if (blocks == NULL) {
+        printf("Memory allocation failed.\n");
+        return;
+    }
+
+    int count = 0;
+    for (int i = 0; i < DISK_SIZE && count < length; i++) {
+        if (disk[i] == -1) {
+            blocks[count] = i;
+            count++;
+        }
+    }
+
+    if (count == length) {
+        for (int i = 0; i < length; i++) {
+            disk[blocks[i]] = linkedCount;
+        }
+        strcpy(linkedFiles[linkedCount].name, name);
+        linkedFiles[linkedCount].blocks = blocks;
+        linkedFiles[linkedCount].length = length;
+        linkedCount++;
+        printf("File '%s' created successfully.\n", name);
+    } else {
+        printf("Not enough free space available for file '%s'.\n", name);
+        free(blocks);
+    }
+}
+
+void displayFiles() {
+    printf("\nLinked Allocation:\n");
+    for (int i = 0; i < linkedCount; i++) {
+        printf("File: %s, Blocks: ", linkedFiles[i].name);
+        for (int j = 0; j < linkedFiles[i].length; j++) {
+            printf("%d ", linkedFiles[i].blocks[j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    initializeDisk();
+
+    // Create some files
+    createLinkedFile("file1.txt", 5);
+    createLinkedFile("file2.txt", 3);
+    createLinkedFile("file3.txt", 8);
+
+    // Display the files
+    displayFiles();
+
+    return 0;
+}
