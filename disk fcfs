@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to calculate total head movement using FCFS algorithm
+int fcfs(int head, int requests[], int n) {
+    int total_movement = 0;
+    int current_pos = head;
+    for (int i = 0; i < n; i++) {
+        total_movement += abs(current_pos - requests[i]);
+        current_pos = requests[i];
+    }
+    return total_movement;
+}
+
+int main() {
+    int head = 50; // Initial disk head position
+    int requests[] = {98, 183, 37, 122, 14, 124, 65, 67}; // Predefined sequence of disk requests
+    int n = sizeof(requests) / sizeof(requests[0]); // Number of requests
+
+    printf("Initial disk head position: %d\n", head);
+    printf("Sequence of disk requests: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", requests[i]);
+    }
+    printf("\n");
+
+    // Calculate total head movement using FCFS
+    int total_movement = fcfs(head, requests, n);
+    printf("Total head movement using FCFS: %d\n", total_movement);
+
+    return 0;
+}
