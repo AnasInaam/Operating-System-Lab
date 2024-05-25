@@ -1,0 +1,57 @@
+#include <stdio.h>
+
+#define RESOURCES 5
+#define PROCESSES 4
+
+int process[PROCESSES] = {210, 350, 100, 520};
+int resource[RESOURCES] = {250, 600, 150, 500, 400};
+int allocation[PROCESSES];
+
+void initialize() {
+    for (int i = 0; i < PROCESSES; i++) {
+        allocation[i] = -1;
+    }
+}
+
+void firstFit(int blockSize[], int m, int processSize[], int n) {
+    initialize();
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (blockSize[j] >= processSize[i]) {
+                allocation[i] = j;
+                blockSize[j] -= processSize[i];
+                break;
+            }
+        }
+    }
+    printf("\nFirst Fit Allocation:\n");
+    printf("\nBlock No.\tProcess No.\n");
+    for (int j = 0; j < RESOURCES; j++) {
+        printf("%d\t\t", j + 1);
+        int allocated = 0;
+
+        for (int i = 0; i < PROCESSES; i++) {
+            if (allocation[i] == j) {
+                printf("%d ", i + 1);
+                allocated = 1;
+            }
+        }
+
+        if (!allocated) {
+            printf("empty");
+        }
+        printf("\n");
+    }
+
+    printf("\nNot Allocated Process\n");
+    for (int i = 0; i < PROCESSES; i++) {
+        if (allocation[i] == -1) {
+            printf("process %d\n", i + 1);
+        }
+    }
+}
+
+int main() {
+    firstFit(resource, RESOURCES, process, PROCESSES);
+    return 0;
+}
