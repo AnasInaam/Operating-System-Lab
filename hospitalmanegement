@@ -1,0 +1,239 @@
+
+
+Here’s a structured way to approach your DBMS practical for the **Hospital Management System** with MySQL. I'll break it down step-by-step for clarity.  
+
+---
+
+### **1. Setting Up the Database and User**
+```sql
+-- Create the database
+CREATE DATABASE HospitalManagement;
+
+-- Use the database
+USE HospitalManagement;
+
+-- Create a user
+CREATE USER 'hospital_user'@'localhost' IDENTIFIED BY 'password';
+
+-- Grant privileges
+GRANT ALL PRIVILEGES ON HospitalManagement.* TO 'hospital_user'@'localhost';
+
+-- Refresh privileges
+FLUSH PRIVILEGES;
+```
+
+---
+
+### **2. Creating Tables with Key Constraints**
+#### Tables:  
+- **Patients**  
+- **Doctors**  
+- **Appointments**  
+- **Departments**  
+- **Medicines**  
+- **Prescriptions**
+
+```sql
+-- Patients Table
+CREATE TABLE Patients (
+    PatientID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Age INT NOT NULL,
+    Gender ENUM('Male', 'Female', 'Other') NOT NULL,
+    ContactNo VARCHAR(15) UNIQUE NOT NULL,
+    Address TEXT
+);
+
+-- Doctors Table
+CREATE TABLE Doctors (
+    DoctorID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Specialization VARCHAR(50) NOT NULL,
+    DepartmentID INT,
+    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
+);
+
+-- Departments Table
+CREATE TABLE Departments (
+    DepartmentID INT AUTO_INCREMENT PRIMARY KEY,
+    DepartmentName VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- Appointments Table
+CREATE TABLE Appointments (
+    AppointmentID INT AUTO_INCREMENT PRIMARY KEY,
+    PatientID INT NOT NULL,
+    DoctorID INT NOT NULL,
+    AppointmentDate DATETIME NOT NULL,
+    Purpose VARCHAR(255),
+    FOREIGN KEY (PatientID) REFERENCES Patients(PatientID),
+    FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID)
+);
+
+-- Medicines Table
+CREATE TABLE Medicines (
+    MedicineID INT AUTO_INCREMENT PRIMARY KEY,
+    MedicineName VARCHAR(100) NOT NULL,
+    Cost DECIMAL(10, 2) NOT NULL
+);
+
+-- Prescriptions Table
+CREATE TABLE Prescriptions (
+    PrescriptionID INT AUTO_INCREMENT PRIMARY KEY,
+    AppointmentID INT NOT NULL,
+    MedicineID INT NOT NULL,
+    Dosage VARCHAR(50),
+    FOREIGN KEY (AppointmentID) REFERENCES Appointments(AppointmentID),
+    FOREIGN KEY (MedicineID) REFERENCES Medicines(MedicineID)
+);
+```
+
+---
+
+### **3. Stored Procedures**
+#### Example: Procedure to Add a New Patient
+```sql
+DELIMITER //
+CREATE PROCEDURE AddNewPatient (
+    IN patientName VARCHAR(100), 
+    IN patientAge INT, 
+    IN patientGender ENUM('Male', 'Female', 'Other'), 
+    IN contactNo VARCHAR(15), 
+    IN address TEXT
+)
+BEGIN
+    INSERT INTO Patients (Name, Age, Gender, ContactNo, Address)
+    VALUES (patientName, patientAge, patientGender, contactNo, address);
+END //
+DELIMITER ;
+```
+
+---
+
+### **4. Cursor**
+#### Example: Display Doctors in a Specific Department
+```sql
+DELIMITER //
+CREATE PROCEDURE GetDoctorsByDepartment(deptID INT)
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE doctorName VARCHAR(100);
+    DECLARE doctorCursor CURSOR FOR 
+        SELECT Name FROM Doctors WHERE DepartmentID = deptID;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN doctorCursor;
+    doctorLoop: LOOP
+        FETCH doctorCursor INTO doctorName;
+        IF done THEN
+            LEAVE doctorLoop;
+        END IF;
+        SELECT doctorName;
+    END LOOP;
+    CLOSE doctorCursor;
+END //
+DELIMITER ;
+```
+
+---
+
+### **5. Triggers**
+#### Example: Trigger to Log Every New Appointment
+```sql
+CREATE TABLE AppointmentLogs (
+    LogID INT AUTO_INCREMENT PRIMARY KEY,
+    PatientID INT,
+    DoctorID INT,
+    AppointmentDate DATETIME,
+    LogTime DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+DELIMITER //
+CREATE TRIGGER LogNewAppointment
+AFTER INSERT ON Appointments
+FOR EACH ROW
+BEGIN
+    INSERT INTO AppointmentLogs (PatientID, DoctorID, AppointmentDate)
+    VALUES (NEW.PatientID, NEW.DoctorID, NEW.AppointmentDate);
+END //
+DELIMITER ;
+```
+
+---
+
+### **6. Queries**
+#### Aggregate Function Query
+- Count Total Patients:
+```sql
+SELECT COUNT(*) AS TotalPatients FROM Patients;
+```
+
+#### Nested Query
+- Find Patients Who Have More Than 3 Appointments:
+```sql
+SELECT Name 
+FROM Patients 
+WHERE PatientID IN (
+    SELECT PatientID 
+    FROM Appointments 
+    GROUP BY PatientID 
+    HAVING COUNT(AppointmentID) > 3
+);
+```
+
+#### Group By Query
+- Count Appointments Grouped by Doctors:
+```sql
+SELECT DoctorID, COUNT(*) AS TotalAppointments 
+FROM Appointments 
+GROUP BY DoctorID;
+```
+
+---
+
+### **7. Joins**
+#### Inner Join
+- Get Appointments with Patient and Doctor Names:
+```sql
+SELECT a.AppointmentID, p.Name AS PatientName, d.Name AS DoctorName, a.AppointmentDate
+FROM Appointments a
+INNER JOIN Patients p ON a.PatientID = p.PatientID
+INNER JOIN Doctors d ON a.DoctorID = d.DoctorID;
+```
+
+#### Left Join
+- List All Patients and Their Appointments:
+```sql
+SELECT p.Name AS PatientName, a.AppointmentDate
+FROM Patients p
+LEFT JOIN Appointments a ON p.PatientID = a.PatientID;
+```
+
+#### Cross Join
+- Match Every Patient with Every Doctor:
+```sql
+SELECT p.Name AS PatientName, d.Name AS DoctorName
+FROM Patients p
+CROSS JOIN Doctors d;
+```
+
+---
+
+### **8. Views**
+#### Create a View for Appointments Summary:
+```sql
+CREATE VIEW AppointmentSummary AS
+SELECT a.AppointmentID, p.Name AS PatientName, d.Name AS DoctorName, a.AppointmentDate
+FROM Appointments a
+INNER JOIN Patients p ON a.PatientID = p.PatientID
+INNER JOIN Doctors d ON a.DoctorID = d.DoctorID;
+```
+
+#### Query the View:
+```sql
+SELECT * FROM AppointmentSummary;
+```
+
+---
+
+With these steps, you’ll cover all the practical aspects, including user creation, tables with constraints, procedures, cursors, triggers, queries (aggregate, nested, group by), joins, and views. Let me know if you need further details or specific examples!
