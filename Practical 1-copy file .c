@@ -1,8 +1,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-
 #define BUFFER_SIZE 1024
 
 int main() {
@@ -58,4 +56,5 @@ This is a simple C program to copy the contents of one file to another using buf
 7. Read chunks of data from the source file and write them to the destination file until the entire file is copied.
 8. Close both files.
 9. Print a success message. */
+
 
