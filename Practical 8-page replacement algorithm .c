@@ -6,7 +6,6 @@
 void fifo(int pages[], int n, int frames) {
     int frame[frames], frameIndex = 0, faults = 0;
     int i, j;
-
     // Initialize frame array with -1 indicating empty frames
     for (i = 0; i < frames; i++) {
         frame[i] = -1;
@@ -124,4 +123,5 @@ int main() {
 
     return 0;
 }
+
 
