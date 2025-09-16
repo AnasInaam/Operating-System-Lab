@@ -2,7 +2,6 @@
 
 #define MAX_FRAMES 3 // Maximum number of frames
 #define MAX_PAGES 100 // Maximum number of pages in the reference string
-
 // FIFO page replacement algorithm
 void fifo(int pages[], int n, int frames) {
     int frame[frames], frameIndex = 0, faults = 0;
@@ -125,3 +124,4 @@ int main() {
 
     return 0;
 }
+
