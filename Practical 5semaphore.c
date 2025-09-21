@@ -12,6 +12,7 @@ void producer()
         ++full;
         --empty;
         x++;
+        
         printf("\nProducer produces item %d", x);
         signal(&mutex);
         signal(&full);
@@ -63,6 +64,7 @@ int main()
     }
     return 0;
 }
+
 
 
 
