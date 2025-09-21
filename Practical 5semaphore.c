@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <pthread.h>
 int mutex = 1;
-
 int full = 0;
 int empty = 10, x = 0;
 void producer()
@@ -64,6 +63,7 @@ int main()
     }
     return 0;
 }
+
 
 
 
